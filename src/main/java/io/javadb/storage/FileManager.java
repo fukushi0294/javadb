@@ -1,11 +1,10 @@
 package io.javadb.storage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Queue;
 
 /**
  * create or fetch table file
@@ -14,6 +13,7 @@ import java.nio.file.Paths;
 public class FileManager {
     // TODO: read from config
     private static final String BASE_PATH = "/javadb/base";
+    private Queue fdPool;
 
     public void createDirectory(String databaseName) throws IOException {
         Path p = Paths.get(BASE_PATH, databaseName);
@@ -22,7 +22,9 @@ public class FileManager {
 
     public void createFile(String databaseName, String tableName) throws IOException {
         Path p = Paths.get(BASE_PATH, databaseName, tableName);
-        Files.createFile(p);
+        FileInputStream fi = new FileInputStream(Files.createFile(p).toFile());
+         FileDescriptor fd = fi.getFD();
+         fd.valid();
     }
 
     public File getFile(Path p) throws FileNotFoundException {
