@@ -22,7 +22,7 @@ public class BinaryTree<T> implements Tree<T> {
         this.comparator = comparator;
     }
 
-    Node root;
+    protected Node root;
 
     @Override
     public void add(T value) {
@@ -86,7 +86,7 @@ public class BinaryTree<T> implements Tree<T> {
 
         if (comparator.compare(value, current.value) == 0) {
             // delete and re-balance
-            Node smallest = pickSmallestValue(current);
+            Node smallest = pickSmallest(current);
             if (current.parent.left == current) {
                 current.parent.left = smallest;
             }
@@ -105,13 +105,26 @@ public class BinaryTree<T> implements Tree<T> {
         return current;
     }
 
-    private Node pickSmallestValue(Node current) {
+    Node pickSmallest(Node current) {
         if (current.left == null) {
             Node parent = current.parent;
             parent.left = current.right;
             return current;
         }
-        return pickSmallestValue(current.left);
+        return pickSmallest(current.left);
     }
 
+    public final T searchBiggest(Node current) {
+        if (current.right == null) {
+            return current.value;
+        }
+        return searchBiggest(current.right);
+    }
+
+    public final T searchSmallest(Node current) {
+        if (current.left == null) {
+            return current.value;
+        }
+        return searchBiggest(current.left);
+    }
 }

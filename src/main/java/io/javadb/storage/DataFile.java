@@ -1,6 +1,7 @@
 package io.javadb.storage;
 
 import com.google.common.primitives.Bytes;
+import io.javadb.storage.page.Page;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

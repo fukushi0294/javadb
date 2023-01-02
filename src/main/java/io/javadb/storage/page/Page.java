@@ -1,6 +1,4 @@
-package io.javadb.storage;
-
-import jdk.jshell.spi.ExecutionControl;
+package io.javadb.storage.page;
 
 import java.util.List;
 
@@ -15,7 +13,7 @@ public class Page implements Serializable {
         this.ctId = new CtId();
     }
 
-    static Page create(byte[] bytes) {
+    public static Page create(byte[] bytes) {
         return new Page();
     }
 

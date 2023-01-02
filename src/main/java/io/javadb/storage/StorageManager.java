@@ -1,5 +1,8 @@
 package io.javadb.storage;
 
+import io.javadb.storage.page.CtId;
+import io.javadb.storage.page.Page;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;

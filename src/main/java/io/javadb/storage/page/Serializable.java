@@ -1,4 +1,4 @@
-package io.javadb.storage;
+package io.javadb.storage.page;
 
 public interface Serializable {
 }

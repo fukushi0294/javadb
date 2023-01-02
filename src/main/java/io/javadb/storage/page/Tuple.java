@@ -1,4 +1,6 @@
-package io.javadb.storage;
+package io.javadb.storage.page;
+
+import io.javadb.storage.page.Serializable;
 
 import java.util.List;
 
