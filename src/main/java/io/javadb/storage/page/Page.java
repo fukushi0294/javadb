@@ -2,7 +2,7 @@ package io.javadb.storage.page;
 
 import java.util.List;
 
-public class Page implements Serializable {
+public class Page {
     public CtId ctId;
     List<Tuple> tuples;
     boolean compressed;

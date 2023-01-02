@@ -2,9 +2,10 @@ package io.javadb.storage.freespace;
 
 import io.javadb.storage.page.CtId;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class FreeSpacePageEntry {
+public class FreeSpacePageEntry implements Serializable {
     private int size;
     private CtId ctId;
 

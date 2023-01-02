@@ -5,7 +5,7 @@ import java.util.Comparator;
 public class BinaryTree<T> implements Tree<T> {
     Comparator<T> comparator;
 
-    class Node {
+    protected class Node {
         T value;
         Node left;
         Node right;
@@ -15,6 +15,10 @@ public class BinaryTree<T> implements Tree<T> {
             this.value = value;
             right = null;
             left = null;
+        }
+
+        public T getValue() {
+            return value;
         }
     }
 
@@ -105,7 +109,7 @@ public class BinaryTree<T> implements Tree<T> {
         return current;
     }
 
-    Node pickSmallest(Node current) {
+    protected Node pickSmallest(Node current) {
         if (current.left == null) {
             Node parent = current.parent;
             parent.left = current.right;

@@ -1,12 +1,11 @@
 package io.javadb.storage;
 
 import io.javadb.storage.page.Page;
-import io.javadb.storage.page.Serializable;
 
 import java.io.IOException;
 import java.util.Map;
 
-public class HeapFile implements Serializable {
+public class HeapFile {
     private BufferPoolManager bufferPoolManager;
     private StorageManager storageManager;
 

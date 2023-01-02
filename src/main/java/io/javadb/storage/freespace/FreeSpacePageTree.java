@@ -1,7 +1,9 @@
 package io.javadb.storage.freespace;
 
 import io.javadb.data.BinaryTree;
-import io.javadb.storage.freespace.FreeSpacePageEntry;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class FreeSpacePageTree extends BinaryTree<FreeSpacePageEntry> {
@@ -25,6 +27,16 @@ public class FreeSpacePageTree extends BinaryTree<FreeSpacePageEntry> {
             FreeSpacePageEntry maxEntry = searchBiggest(super.root);
             max = maxEntry.getSize();
         }
+    }
+
+    List<FreeSpacePageEntry> valueList() {
+        LinkedList<FreeSpacePageEntry> valueList = new LinkedList<>();
+        Node node = this.pickSmallest(this.root);
+        while (node != null) {
+            valueList.add(node.getValue());
+            node = this.pickSmallest(this.root);
+        }
+        return valueList;
     }
 
 }
