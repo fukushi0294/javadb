@@ -3,7 +3,7 @@ package io.javadb.data;
 import java.util.Comparator;
 
 public class BinaryTree<T> implements Tree<T> {
-    Comparator<T> comparator;
+    protected Comparator<T> comparator;
 
     protected class Node {
         T value;

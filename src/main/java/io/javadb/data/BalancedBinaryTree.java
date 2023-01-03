@@ -12,7 +12,7 @@ public class BalancedBinaryTree<T> extends BinaryTree<T> {
         root = reBalance(root);
     }
 
-    int height(Node current) {
+    public int height(Node current) {
         if (current == null) {
             return 0;
         }

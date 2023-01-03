@@ -1,13 +1,14 @@
 package io.javadb.storage.freespace;
 
+import io.javadb.data.LinkedTree;
 import io.javadb.storage.page.CtId;
 
 public class FreeSpace {
-    private FreeSpacePageTree root;
+    private LinkedTree root;
 
     static class TreeNode {
-        public FreeSpacePageTree current;
-        public FreeSpacePageTree next;
+        public LinkedTree current;
+        public LinkedTree next;
     }
 
     public void update(CtId ctId) {
