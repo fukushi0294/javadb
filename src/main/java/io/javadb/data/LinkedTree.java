@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class LinkedTree<T> extends BalancedBinaryTree<T> {
+public abstract class LinkedTree<T> extends BalancedBinaryTree<T> {
     private T max;
     private final int capacity;
 
@@ -13,13 +13,14 @@ public class LinkedTree<T> extends BalancedBinaryTree<T> {
         this.capacity = capacity;
     }
 
-    class NextPtr extends Node {
-        LinkedTree<T> next;
-        public NextPtr(T value) {
+    class PtrNode extends Node {
+        NextPtr<T> next;
+        public PtrNode(T value, NextPtr<T> nextPtr) {
             super(value);
-            next = new LinkedTree<>(comparator, capacity);
+            next = nextPtr;
         }
     }
+    protected abstract NextPtr<T> nextPtr();
 
 
     @Override
@@ -28,8 +29,8 @@ public class LinkedTree<T> extends BalancedBinaryTree<T> {
             root = new Node(value);
         } else {
             Node node = addRecursive(root, value);
-            if (node instanceof LinkedTree.NextPtr) {
-                ((NextPtr) node).next.add(value);
+            if (node instanceof LinkedTree.PtrNode) {
+                ((PtrNode) node).next.getNext().add(value);
             } else {
                 root = reBalance(root);
             }
@@ -42,7 +43,7 @@ public class LinkedTree<T> extends BalancedBinaryTree<T> {
 
     @Override
     protected Node addRecursive(Node current, T value) {
-        if (current instanceof LinkedTree.NextPtr) {
+        if (current instanceof LinkedTree.PtrNode) {
             return current;
         }
 
@@ -51,7 +52,7 @@ public class LinkedTree<T> extends BalancedBinaryTree<T> {
                 int depth = height(root);
                 Node node;
                 if (depth == capacity) {
-                    node = new NextPtr(value);
+                    node = new PtrNode(value, nextPtr());
                 } else {
                     node = new Node(value);
                 }
@@ -65,7 +66,7 @@ public class LinkedTree<T> extends BalancedBinaryTree<T> {
                 int depth = height(root);
                 Node node;
                 if (depth == capacity) {
-                    node = new NextPtr(value);
+                    node = new PtrNode(value, nextPtr());
                 } else {
                     node = new Node(value);
                 }
