@@ -9,9 +9,8 @@ public class BinaryTree<T> implements Tree<T> {
         T value;
         Node left;
         Node right;
-        Node parent;
 
-        Node(T value) {
+        public Node(T value) {
             this.value = value;
             right = null;
             left = null;
@@ -33,32 +32,36 @@ public class BinaryTree<T> implements Tree<T> {
         if (root == null) {
             root = new Node(value);
         } else {
-            root = addRecursive(root, value);
+            addRecursive(root, value);
         }
     }
 
-    private Node addRecursive(Node current, T value) {
+    /**
+     * @param current
+     * @param value
+     * @return edge node which is just appended
+     */
+    protected Node addRecursive(Node current, T value) {
         if (comparator.compare(value, current.value) < 0) {
             if (current.left == null) {
                 Node node = new Node(value);
-                node.parent = current;
+                current.left = node;
                 return node;
             } else {
-                current.left = addRecursive(current, value);
+                return addRecursive(current.left, value);
             }
         } else if (comparator.compare(value, current.value) > 0) {
             if (current.right == null) {
                 Node node = new Node(value);
-                node.parent = current;
+                current.right = node;
                 return node;
             } else {
-                current.right = addRecursive(current, value);
+                return addRecursive(current.right, value);
             }
         } else {
             // value already exists
             return current;
         }
-        return current;
     }
 
     @Override
@@ -89,15 +92,20 @@ public class BinaryTree<T> implements Tree<T> {
         }
 
         if (comparator.compare(value, current.value) == 0) {
-            // delete and re-balance
-            Node smallest = pickSmallest(current);
-            if (current.parent.left == current) {
-                current.parent.left = smallest;
+            if (current.left == null && current.right == null) {
+                return null;
             }
-            if (current.parent.right == current) {
-                current.parent.right = smallest;
+            if (current.right == null) {
+                return current.left;
             }
-            smallest.right = current.right;
+
+            if (current.left == null) {
+                return current.right;
+            }
+
+            Node smallest = searchSmallest(current.right);
+            current.value = smallest.value;
+            current.right = deleteRecursive(current.right, smallest.value);
             return current;
         }
 
@@ -110,12 +118,9 @@ public class BinaryTree<T> implements Tree<T> {
     }
 
     protected Node pickSmallest(Node current) {
-        if (current.left == null) {
-            Node parent = current.parent;
-            parent.left = current.right;
-            return current;
-        }
-        return pickSmallest(current.left);
+        Node smallest = searchSmallest(current.left);
+        deleteRecursive(current.left, smallest.value);
+        return smallest;
     }
 
     public final T searchBiggest(Node current) {
@@ -125,10 +130,10 @@ public class BinaryTree<T> implements Tree<T> {
         return searchBiggest(current.right);
     }
 
-    public final T searchSmallest(Node current) {
+    public final Node searchSmallest(Node current) {
         if (current.left == null) {
-            return current.value;
+            return current;
         }
-        return searchBiggest(current.left);
+        return searchSmallest(current.left);
     }
 }

@@ -35,4 +35,7 @@ public class FreeSpaceMap {
         }
     }
 
+    public boolean isFull() {
+        return false;
+    }
 }

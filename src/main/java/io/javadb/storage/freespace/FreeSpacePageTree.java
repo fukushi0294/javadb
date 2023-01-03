@@ -1,13 +1,13 @@
 package io.javadb.storage.freespace;
 
-import io.javadb.data.BinaryTree;
+import io.javadb.data.BalancedBinaryTree;
 
 import java.util.LinkedList;
 import java.util.List;
 
-
-public class FreeSpacePageTree extends BinaryTree<FreeSpacePageEntry> {
+public class FreeSpacePageTree extends BalancedBinaryTree<FreeSpacePageEntry> {
     private int max;
+    private int capacity;
 
     public FreeSpacePageTree() {
         super(FreeSpacePageEntry.comparator);
@@ -38,5 +38,4 @@ public class FreeSpacePageTree extends BinaryTree<FreeSpacePageEntry> {
         }
         return valueList;
     }
-
 }
