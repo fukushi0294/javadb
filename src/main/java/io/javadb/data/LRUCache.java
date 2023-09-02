@@ -3,11 +3,13 @@ package io.javadb.data;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Optional;
 
 public class LRUCache<K, V> {
-    private final BiMap<K, V> listNodeMap;
-    private final LinkedList<V> linkedList;
+    protected final BiMap<K, V> listNodeMap;
+    protected final LinkedList<V> linkedList;
     private final int capacity;
 
     public LRUCache(int capacity) {
@@ -43,9 +45,10 @@ public class LRUCache<K, V> {
         return true;
     }
 
-    public void evictElement() {
+    public V evictElement() {
         V remove = this.linkedList.removeFirst();
         listNodeMap.inverse().remove(remove);
+        return remove;
     }
 
     public int size() {

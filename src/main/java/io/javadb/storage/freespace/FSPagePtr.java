@@ -5,7 +5,7 @@ import io.javadb.data.NextPtr;
 
 public class FSPagePtr implements NextPtr<FreeSpacePageEntry> {
     @Override
-    public LinkedTree<FreeSpacePageEntry> getNext() {
+    public FreeSpacePageTree getNext() {
         return null;
     }
 }

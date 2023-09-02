@@ -2,15 +2,13 @@ package io.javadb.storage.freespace;
 
 import io.javadb.data.LinkedTree;
 import io.javadb.data.NextPtr;
-import org.checkerframework.checker.units.qual.C;
 
 import java.io.*;
-import java.util.Comparator;
 import java.util.List;
 
 public class FreeSpacePageTree extends LinkedTree<FreeSpacePageEntry> {
-    public FreeSpacePageTree(Comparator<FreeSpacePageEntry> comparator, int capacity) {
-        super(comparator, capacity);
+    public FreeSpacePageTree(int capacity) {
+        super(FreeSpacePageEntry.comparator, capacity);
     }
 
     @Override
@@ -19,7 +17,7 @@ public class FreeSpacePageTree extends LinkedTree<FreeSpacePageEntry> {
     }
 
     public static FreeSpacePageTree create(byte[] bytes) throws IOException, ClassNotFoundException {
-        FreeSpacePageTree fsTree = new FreeSpacePageTree(Comparator.comparingInt(FreeSpacePageEntry::getSize), 1024);
+        FreeSpacePageTree fsTree = new FreeSpacePageTree(1024);
         try (ByteArrayInputStream is = new ByteArrayInputStream(bytes)) {
             while (is.available() == 0) {
                 try (ObjectInputStream ois = new ObjectInputStream(is)) {

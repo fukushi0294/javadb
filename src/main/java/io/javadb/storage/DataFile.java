@@ -3,9 +3,9 @@ package io.javadb.storage;
 import com.google.common.primitives.Bytes;
 import io.javadb.storage.page.Page;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,18 +15,18 @@ public class DataFile {
     private static int HEADER_LENGTH = 1024 * 8;
     private DataFileHeader dataFileHeader;
 
-    private final FileInputStream fileInputStream;
+    private final RandomAccessFile randomAccessFile;
     private FileOutputStream fileOutputStream;
 
-    public DataFile(FileInputStream fi) throws IOException {
-        this.fileInputStream = fi;
+    public DataFile(RandomAccessFile fi) throws IOException {
+        this.randomAccessFile = fi;
         this.dataFileHeader = extract(fi);
         this.freeSpaceLower = this.dataFileHeader.higher;
         this.freeSpaceHigher = this.dataFileHeader.lower;
         this.fileOutputStream = new FileOutputStream(fi.getFD());
     }
 
-    public DataFileHeader extract(FileInputStream fi) throws IOException {
+    public DataFileHeader extract(RandomAccessFile fi) throws IOException {
         byte[] bytes = new byte[HEADER_LENGTH];
         fi.read(bytes, 0, HEADER_LENGTH);
         return new DataFileHeader(bytes);

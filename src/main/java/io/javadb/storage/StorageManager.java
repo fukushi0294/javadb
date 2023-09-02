@@ -3,8 +3,8 @@ package io.javadb.storage;
 import io.javadb.storage.page.CtId;
 import io.javadb.storage.page.Page;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -31,9 +31,9 @@ public class StorageManager {
         Path path = Path.of(ctId.pageId);
         Page fetched;
         FileManager fileManager = databaseNameToFile.get(databaseName);
-        try (FileInputStream fi = fileManager.getFile(path)) {
+        try (RandomAccessFile raf = fileManager.getFile(path)) {
             byte[] bytes = new byte[4 * 1024];
-            fi.read(bytes, offset, 4 * 1024);
+            raf.read(bytes, offset, 4 * 1024);
             fetched = Page.create(bytes);
             return fetched;
         }
@@ -42,7 +42,7 @@ public class StorageManager {
     public void persist(String databaseName, List<Page> pages) throws IOException {
         FileManager fileManager = databaseNameToFile.get(databaseName);
         Path path = Path.of(pages.get(0).ctId.pageId);
-        try (FileInputStream fi = fileManager.getFile(path)) {
+        try (RandomAccessFile fi = fileManager.getFile(path)) {
             DataFile dataFile = new DataFile(fi);
             dataFile.append(pages);
         }
