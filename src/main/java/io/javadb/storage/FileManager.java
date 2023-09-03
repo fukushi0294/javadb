@@ -1,17 +1,23 @@
 package io.javadb.storage;
 
 import io.javadb.data.LRUCache;
+import io.javadb.storage.page.Page;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * create or fetch table file
  * there is no implementation to issue object id against database name or table name like Postgres
  * One fileManager for One Database and manage table file
+ * Page operation is done through FileManager
  */
 public class FileManager implements AutoCloseable {
     private static final String BASE_PATH = "/javadb/base";
@@ -75,6 +81,26 @@ public class FileManager implements AutoCloseable {
         RandomAccessFile raf = new RandomAccessFile(p.toFile(), "rw");
         filePool.put(p.toString(), raf);
         return raf;
+    }
+
+    public void persist(List<Page> pages) throws IOException {
+        var tableToPages = pages.stream()
+                .collect(Collectors.groupingBy(Page::getTableName));
+
+        for (var item : tableToPages.entrySet()) {
+            var k = item.getKey();
+            var v = item.getValue();
+            Path path = Path.of(BASE_PATH + "/" + databaseName + "/" + k);
+            byte[] contents = Page.concat(v);
+
+            RandomAccessFile raf;
+            if (filePool.get(k).isPresent()) {
+                raf = filePool.get(k).get();
+            } else {
+                raf = new RandomAccessFile(path.toFile(), "rw");
+            }
+            raf.write(contents);
+        }
     }
 
     @Override

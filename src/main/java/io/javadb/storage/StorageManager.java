@@ -1,51 +1,39 @@
 package io.javadb.storage;
 
-import io.javadb.storage.page.CtId;
 import io.javadb.storage.page.Page;
 
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class StorageManager {
-    private final Map<String, FileManager> databaseNameToFile = new HashMap<>();
+    private BufferPoolManager bufferPoolManager;
+    private FileManager fileManager;
 
     public void createDatabase(String databaseName) throws IOException {
-        FileManager fm = new FileManager(databaseName);
-        databaseNameToFile.put(databaseName, fm);
+        fileManager = new FileManager(databaseName);
     }
 
-    public void createTable(String databaseName, String tableName) throws IOException {
-        FileManager fm = databaseNameToFile.get(databaseName);
-        fm.createFile(tableName);
-    }
-
-    /**
-     * For index scan
-     */
-    public Page fetch(String databaseName, CtId ctId) throws IOException {
-        int offset = ctId.offset;
-        Path path = Path.of(ctId.pageId);
-        Page fetched;
-        FileManager fileManager = databaseNameToFile.get(databaseName);
-        try (RandomAccessFile raf = fileManager.getFile(path)) {
-            byte[] bytes = new byte[4 * 1024];
-            raf.read(bytes, offset, 4 * 1024);
-            fetched = Page.create(bytes);
-            return fetched;
+    public void createTable(String tableName) throws IOException {
+        if (fileManager == null) {
+            throw new IllegalStateException();
         }
+        fileManager.createFile(tableName);
     }
 
-    public void persist(String databaseName, List<Page> pages) throws IOException {
-        FileManager fileManager = databaseNameToFile.get(databaseName);
-        Path path = Path.of(pages.get(0).ctId.pageId);
-        try (RandomAccessFile fi = fileManager.getFile(path)) {
-            DataFile dataFile = new DataFile(fi);
-            dataFile.append(pages);
+    // new page load to memory
+    public Page fetchNew(String databaseName, String tableName) {
+        Page page = this.bufferPoolManager.fetchFreePage(tableName);
+        if (page != null) {
+            return page;
         }
+        page = new Page(databaseName, tableName);
+        this.bufferPoolManager.append(page);
+        return page;
+    }
+
+    public void persist() throws IOException {
+        List<Page> pages = bufferPoolManager.deFragment();
+        fileManager.persist(pages);
     }
 
 }

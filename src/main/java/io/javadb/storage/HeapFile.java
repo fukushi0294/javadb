@@ -6,17 +6,23 @@ import java.io.IOException;
 import java.util.Map;
 
 public class HeapFile {
-    private BufferPoolManager bufferPoolManager;
-    private StorageManager storageManager;
+    private final String databaseName;
 
-    public Page createPage(String databaseName) throws IOException {
-        Page page = new Page();
+    public HeapFile(String databaseName) {
+        this.databaseName = databaseName;
+    }
+
+    public Page createPage(String tableName) throws IOException {
+        Page page = new Page(databaseName, tableName);
         append(page);
         return page;
     }
 
+    public Page loadPage(String tableName) throws IOException {
+        throw new RuntimeException();
+    }
+
     public void append(Page page) {
-        // append page to buffer pool
     }
 
     // for index scan
