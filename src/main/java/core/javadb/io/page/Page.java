@@ -1,6 +1,8 @@
 package core.javadb.io.page;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Page {
     private final String databaseName;
@@ -15,6 +17,14 @@ public class Page {
         this.ctId = new CtId();
         this.databaseName = databaseName;
         this.tableName = tableName;
+    }
+
+    public void insert(Tuple tuple) {
+        this.tuples.add(tuple);
+    }
+
+    public List<Tuple> has(Predicate<Tuple> condition) {
+        return tuples.stream().filter(condition).collect(Collectors.toList());
     }
 
     public String getTableName() {

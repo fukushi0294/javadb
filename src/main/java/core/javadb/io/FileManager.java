@@ -91,15 +91,15 @@ public class FileManager implements AutoCloseable {
             var k = item.getKey();
             var v = item.getValue();
             Path path = Path.of(BASE_PATH + "/" + databaseName + "/" + k);
-            byte[] contents = Page.concat(v);
-
             RandomAccessFile raf;
             if (filePool.get(k).isPresent()) {
                 raf = filePool.get(k).get();
             } else {
                 raf = new RandomAccessFile(path.toFile(), "rw");
+                filePool.put(k, raf);
             }
-            raf.write(contents);
+            DataFile dataFile = new DataFile(raf);
+            dataFile.append(v);
         }
     }
 

@@ -1,9 +1,11 @@
 package core.javadb.io;
 
 import core.javadb.io.page.Page;
+import core.javadb.io.page.Tuple;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class StorageManager {
     private BufferPoolManager bufferPoolManager;
@@ -29,6 +31,11 @@ public class StorageManager {
         page = new Page(databaseName, tableName);
         this.bufferPoolManager.append(page);
         return page;
+    }
+
+    public List<Tuple> scan(Predicate<Tuple> condition) {
+        // TODO
+        return null;
     }
 
     public void persist() throws IOException {
